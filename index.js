@@ -1,15 +1,20 @@
 const express = require('express');
-const { resolve } = require('path');
-
 const app = express();
-const port = 3010;
+const connectDatabase = require("./src/database/database")
 
-app.use(express.static('static'));
-
-app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname, 'pages/index.html'));
+require("dotenv").config({
+    path: "./src/Config/.env"
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+const port = process.env.port;
+const url = process.env.url;
+
+app.listen(port, async() => {
+    try {
+        await connectDatabase(url);
+        console.log(`Server is running on port ${port}`);
+    }
+    catch(error) {
+        console.log(error)
+    }
+})
